@@ -1,72 +1,106 @@
-# Evita - Eviction based AI Assistant
+# EVITA — AI Legal Assistant for Tenants Facing Eviction
 
-# Goal
+[![Live Demo](https://img.shields.io/badge/Live_Demo-evictionchatbot.vercel.app-000000?style=flat&logo=vercel&logoColor=white)](https://evictionchatbot.vercel.app)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991?logo=openai&logoColor=white)](https://openai.com/)
 
-Create a chatbot to assist tenants going through eviction, so they do not have to wait on hold to speak to an advocate.
+**Built in partnership with [Philadelphia Legal Assistance](https://philalegal.org) to help tenants facing eviction navigate the legal system.**
 
-# Deliverables
+> Over 21,000 tenants in Philadelphia face eviction each year. Legal assistance hotlines are understaffed and underfunded — many callers wait on hold for hours before reaching an advocate. EVITA provides immediate, knowledgeable assistance to tenants navigating the eviction process.
 
-* [EVITA] - development version of the chatbot, hosted on Vercel
-* [Presentation about EVITA]
+**[Try the live demo](https://evictionchatbot.vercel.app)**
 
-# Team
+---
 
-* Sri Sudersan Thopey Ganesh
-* Zakir Jiwani
-* Jerome Barnes
-* Jonathan Pyle from [Philadelphia Legal Assistance]
+## The Problem
 
-# What is the overall mission and objective of the project?
+Tenants facing eviction in Philadelphia need quick access to accurate legal information — their rights, court procedures, defense strategies, and available resources. The existing system depends on overwhelmed hotlines that can't meet demand. Many tenants miss critical deadlines or fail to exercise their rights simply because they couldn't get through to an advocate in time.
 
-Over 21,000 tenants in Philadelphia last year faced the prospect of being evicted from their rental unit. In order to get help to avoid eviction, they had to call legal assistance hotlines that are understaffed due to lack of funding. Many callers could only get through to an operator after waiting on hold for a long time. Ideally, the City would provide more funding for assistance to tenants. However, that is unlikely to happen.
+## The Solution
 
-Has AI technology improved to the point where a chatbot (perhaps a voice chatbot) could provide meaningful assistance to tenants facing eviction? Perhaps not, but we will not know unless we try to create one, and that is the goal of this project.
+EVITA is an AI-powered chatbot trained on Philadelphia-specific eviction law, the Eviction Diversion Program, tenant rights and protections, court procedures, and legal defense strategies. It provides:
 
-# What is your organization’s mission? Why do you care about this idea?
+- **Immediate responses** to eviction-related legal questions — no hold times
+- **Status assessment** through conversational intake to determine where a tenant stands in the eviction process
+- **Appointment scheduling** from available legal assistance slots
+- **Resource referrals** to Philadelphia Legal Assistance, Community Legal Services, and tenant rights organizations
 
-[Philadelphia Legal Assistance](https://github.com/philadelphialegalassistance) is a non-profit organization that provides free legal assistance in civil matters to low-income Philadelphia residents. Its mission is to enforce and protect the rights of individuals and families by providing accessible, creative and high-quality legal assistance and working collaboratively for systemic change. This idea matters because we should make sure that low-income people who have a pressing legal need can get meaningful assistance quickly and conveniently.
+The system prompt contains a comprehensive knowledge base consolidated from materials provided by Philadelphia Legal Assistance, covering the full eviction process from initial notice through appeal.
 
-# What are the top three goals of the project?
+---
 
-1. Test whether a chatbot a Large Language Model (LLM) can provide adequate answers to questions about the eviction process in Philadelphia.
-2. Test whether a chatbot can determine a user's current status in the eviction process by asking questions of the user.
-3. Test whether a chatbot can, by having an open-ended conversation with a user, schedule the user for an appointment from a list of available appointments.
+## Tech Stack
 
-# Who are the top target beneficiaries (users, stakeholders, etc) of the project? What do you hope they gain from the value your project delivers?
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18, Vite 5 |
+| Styling | Tailwind CSS 3 |
+| AI | OpenAI GPT-4 |
+| Deployment | Vercel |
+| Knowledge Base | Custom legal prompt (~15K tokens of Philadelphia eviction law) |
 
-The goal of the project is not necessarily to put a chatbot into production. The primary beneficiaries are legal assistance providers and government officials who will be better informed about the potential benefits and risks of providing service to low-income people through an LLM-powered automated system.
+## Project Structure
 
-# Project Scope
+```
+evictionchatbot/
+├── src/
+│   ├── App.jsx          # Root layout
+│   ├── Chatbot.jsx      # Core chat interface + OpenAI integration
+│   ├── Loader.jsx       # Loading state component
+│   ├── prompt.txt       # Legal knowledge base (eviction law, procedures, rights)
+│   └── main.jsx         # Entry point
+├── public/
+├── index.html
+├── vite.config.js
+├── tailwind.config.js
+└── package.json
+```
 
-We set out to develop a chatbot that is educated in Philadelphia-specific eviction facts and that can carry on a conversation with a tenant who is facing eviction. We also worked on a number of LLM-based automation features, which we have not yet had time to integrate into the final chatbot. The source code for these is in the `prototypes` branch of the repository.
+## Getting Started
 
-# Tech stack
+```bash
+# Clone the repository
+git clone https://github.com/JiwaniZakir/evictionchatbot.git
+cd evictionchatbot
 
-* React.js
-* Tailwind CSS
-* OpenAI API
+# Install dependencies
+npm install
 
-# Are there other dependencies, resources, or partners you anticipate using or needing in order to deliver the project?
+# Set up environment variables
+echo "VITE_API_KEY=your_openai_api_key" > .env
 
-Philadelphia Legal Assistance (PLA) has expertise on the Eviction Diversion Program, which is the first stage of the eviction process in Philadelphia. Later on, we may tap into the expertise of the advocates at Community Legal Services.
+# Start development server
+npm run dev
+```
 
-# Who are the key contacts and stakeholders?
+## Data Sources
 
-The primary point of contact is Jonathan Pyle from Philadelphia Legal Assistance. He can be reached at 215-391-9686, jhpyle@gmail.com, or through GitHub at @jhpyle.
+- **Legal knowledge**: Materials provided by Philadelphia Legal Assistance, covering the Eviction Diversion Program, court procedures, tenant rights, and defense strategies
+- **Code violations**: [OpenDataPhilly](https://opendataphilly.org) code violations dataset
+- **Court dockets**: Philadelphia Legal Assistance eviction court dockets API
+- **Scheduling**: Google Calendar API integration
 
-# Target Delivery Date - and any particular drivers of that date
+## Team
 
-There is no target delivery date. The goal of the project is to learn and ultimately to educate the community of service providers about the benefits and risks of delivering services to low-income people through a chatbot.
+- **Zakir Jiwani** — AI integration, prompt engineering, frontend development
+- **Sri Sudersan Thopey Ganesh** — Development
+- **Jerome Barnes** — Development
+- **Jonathan Pyle** ([Philadelphia Legal Assistance](https://philalegal.org)) — Legal domain expertise, eviction law knowledge base
 
-# Data for this Project
+## Context
 
-The main "data" for the project is not data per se, but legal information. Jonathan Pyle (@jhpyle) provided written materials containing the legal knowledge that the chatbot will need to know in order to provide helpful information to tenants. Zakir (@zakir-jiwani) consolidated the materials into a prompt.
+EVITA was built at the Social Justice Hackathon 2024 in partnership with Philadelphia Legal Assistance. The project explores whether LLM-powered chatbots can meaningfully assist tenants facing eviction — reducing the burden on understaffed legal hotlines while ensuring people get accurate, timely information about their rights and options.
 
-Other data sources included:
-- The code violations dataset on opendataphilly.org.
-- The eviction court dockets, available through an API provided by Philadelphia Legal Assistance.
-- Google Calendar, through its API.
+## Contributing
 
-[Presentation about EVITA]: https://www.canva.com/design/DAGBvgKOw2o/M1vnyDLa8rJX22tDBg3Q1Q/edit?utm_content=DAGBvgKOw2o&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-[Philadelphia Legal Assistance]: https://philalegal.org
-[EVITA]: https://evictionchatbot.vercel.app/
+Contributions are welcome. Areas where help is needed:
+
+- **Expanding the knowledge base** with additional jurisdictions beyond Philadelphia
+- **Voice interface** for accessibility (see `prototypes` branch for early work)
+- **Multi-language support** for non-English-speaking tenants
+- **Integration testing** with legal professionals to validate response accuracy
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 — see [LICENSE](LICENSE) for details.
