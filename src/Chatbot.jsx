@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { OpenAI } from "openai";
 import rawPrompt from "../src/prompt.txt";
 import Loader from "./Loader";
