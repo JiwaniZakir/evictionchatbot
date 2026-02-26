@@ -8,6 +8,7 @@ function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const apiKey = import.meta.env.VITE_API_KEY;
+  const model = import.meta.env.VITE_MODEL || "gpt-4o";
   const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
   const handleInputChange = (e) => {
@@ -52,7 +53,7 @@ function Chatbot() {
       const prompt = `${fileContent}\n${userInputPrompt}`;
 
       const aiResponse = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: model,
         messages: [{ role: "user", content: prompt }],
       });
 
