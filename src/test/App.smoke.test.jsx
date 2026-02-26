@@ -1,28 +1,13 @@
 /**
  * Smoke test — verifies that the App component mounts without throwing.
  *
- * The Chatbot component instantiates the OpenAI client at render time
- * (using `new OpenAI(...)`) and imports prompt.txt as a Vite asset URL.
- * Both are mocked here so the test can run in a Node/jsdom environment
- * without real API credentials or a Vite dev server.
+ * The Chatbot component now calls /api/chat via fetch (server-side proxy)
+ * instead of instantiating the OpenAI client directly in the browser.
+ * Only the prompt.txt asset import needs to be mocked so the test can run
+ * in a Node/jsdom environment without a Vite dev server.
  */
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-
-// Mock the openai package. OpenAI is used as a constructor (new OpenAI(...)),
-// so the mock must expose a real class or a regular function, not an arrow fn.
-vi.mock("openai", () => {
-  class OpenAI {
-    constructor() {
-      this.chat = {
-        completions: {
-          create: vi.fn(),
-        },
-      };
-    }
-  }
-  return { OpenAI };
-});
 
 // Mock the prompt.txt asset import (Vite normally resolves it as a URL string).
 vi.mock("../prompt.txt", () => ({ default: "/mock-prompt.txt" }));

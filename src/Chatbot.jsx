@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { OpenAI } from "openai";
 import rawPrompt from "../src/prompt.txt";
 import Loader from "./Loader";
 
@@ -7,9 +6,6 @@ function Chatbot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const apiKey = import.meta.env.VITE_API_KEY;
-  const model = import.meta.env.VITE_MODEL || "gpt-4o";
-  const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
@@ -40,6 +36,7 @@ function Chatbot() {
       setLoading(false); // Hide loading overlay
     }
   };
+
   const readTextFileAndUseAsPrompt = async (userInputPrompt) => {
     try {
       const response = await fetch(rawPrompt);
@@ -52,10 +49,22 @@ function Chatbot() {
 
       const prompt = `${fileContent}\n${userInputPrompt}`;
 
-      const aiResponse = await openai.chat.completions.create({
-        model: model,
-        messages: [{ role: "user", content: prompt }],
+      const apiResponse = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: prompt }],
+        }),
       });
+
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || `API request failed: ${apiResponse.statusText}`
+        );
+      }
+
+      const aiResponse = await apiResponse.json();
 
       aiResponse.choices.forEach((messageResponse) => {
         setMessages((prevMessages) => [
