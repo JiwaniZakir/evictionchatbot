@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import rawPrompt from "../src/prompt.txt";
 import Loader from "./Loader";
 
@@ -6,6 +6,14 @@ function Chatbot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const systemPromptRef = useRef(null);
+
+  useEffect(() => {
+    fetch(rawPrompt)
+      .then((res) => res.text())
+      .then((text) => { systemPromptRef.current = text; })
+      .catch((err) => console.error("Failed to load system prompt:", err));
+  }, []);
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
@@ -24,37 +32,46 @@ function Chatbot() {
         { content: input, sender: "user" },
       ]);
 
-      setLoading(true); // Show loading overlay
+      setLoading(true);
 
       const userInputPrompt = input;
-      await readTextFileAndUseAsPrompt(userInputPrompt);
+      await sendMessageWithHistory(userInputPrompt);
 
       setInput("");
     } catch (error) {
       console.error("An error occurred:", error.message);
     } finally {
-      setLoading(false); // Hide loading overlay
+      setLoading(false);
     }
   };
 
-  const readTextFileAndUseAsPrompt = async (userInputPrompt) => {
+  const sendMessageWithHistory = async (userInputPrompt) => {
     try {
-      const response = await fetch(rawPrompt);
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch file prompt.txt: ${response.statusText}`
-        );
+      if (!systemPromptRef.current) {
+        const response = await fetch(rawPrompt);
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch file prompt.txt: ${response.statusText}`
+          );
+        }
+        systemPromptRef.current = await response.text();
       }
-      const fileContent = await response.text();
 
-      const prompt = `${fileContent}\n${userInputPrompt}`;
+      const chatHistory = messages.map((msg) => ({
+        role: msg.sender === "user" ? "user" : "assistant",
+        content: msg.content,
+      }));
+
+      const apiMessages = [
+        { role: "system", content: systemPromptRef.current },
+        ...chatHistory,
+        { role: "user", content: userInputPrompt },
+      ];
 
       const apiResponse = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [{ role: "user", content: prompt }],
-        }),
+        body: JSON.stringify({ messages: apiMessages }),
       });
 
       if (!apiResponse.ok) {
@@ -73,7 +90,7 @@ function Chatbot() {
         ]);
       });
     } catch (error) {
-      console.error("Error reading or using the file content:", error);
+      console.error("Error sending message:", error);
     }
   };
 
